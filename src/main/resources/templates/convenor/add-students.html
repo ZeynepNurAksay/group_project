@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Students - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+<body>
+
+<header th:replace="fragments/convenor-header :: header"></header>
+
+<div class="container">
+
+    <div class="row my-3">
+        <div th:if="${hidden == 'show'}"
+             th:class="'w-100 col-lg-12 ' + ${bannerColor} + ' alert alert-dismissible fade show'" role="alert">
+            <span><i th:text="${message}"></i></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-6 mb-5">
+            <a th:href="@{/convenor/modules}" class="mt-auto btn btn-primary w-50 mb-5">Back To View Modules</a>
+            <h1>Add Students</h1>
+
+            <form th:action="@{/convenor/add-students}" th:object="${addStudentDTO}" method="post">
+                <p>Don't see your module listed? Create your module's first:</p>
+                <a class="btn btn-outline-primary w-50 mb-5" th:href="@{/convenor/addModule}">Create Modules</a>
+
+                <div class="form-group mb-3">
+                    <label for="selectedModuleID">Select which module to add the new student to:</label>
+                    <select id="selectedModuleID" class="form-control" th:field="*{module_id}">
+                        <!--suppress ThymeleafVariablesResolveInspection -->
+
+                        <option th:each="module : ${modules}" th:value="${module.id}" th:text="${module.name}"></option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('module_id')}" th:errors="*{module_id}" class="text-error"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="firstName">First Name:</label>
+                    <input id="firstName" name="firstName" th:field="*{firstName}" class="form-control">
+                    <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-error"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="lastName">Last Name:</label>
+                    <input id="lastName" name="lastName" th:field="*{lastName}" class="form-control">
+                    <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-error"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="email">Email:</label>
+                    <input id="email" name="email" th:field="*{email}" class="form-control">
+                    <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-error"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="current_marks">(Optional) Current Module Marks:</label>
+                    <div class="input-group">
+                    <span class="input-group-text">%</span>
+                        <input id="current_marks" name="current_marks" th:field="*{current_marks}" type="number" class="form-control">
+                    </div>
+                    <span th:if="${#fields.hasErrors('current_marks')}" th:errors="*{current_marks}" class="text-error"></span>
+                </div>
+
+                <input type="submit" class="btn btn-primary w-50">
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

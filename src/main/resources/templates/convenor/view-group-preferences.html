@@ -1,0 +1,131 @@
+ <!DOCTYPE html>
+<!--suppress ThymeleafVariablesResolveInspection -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Group Answers - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+
+<header th:replace="fragments/convenor-header :: header"></header>
+
+<body>
+<div class="container mb-5">
+    <div class="row my-3">
+        <div class="col-lg-12">
+            <div th:if="${hidden == 'show'}"
+                 th:class="'p-3 w-100 col-lg-12 ' + ${bannerColor} + ' alert alert-dismissible fade show'" role="alert">
+                <span><i th:text="${message}"></i></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 mb-5">
+            <h1>Student Answers</h1>
+            <p>Here you can see the answers of each member and the features our AI algorithm picked out based on the responses</p>
+            <h4>Students in this group who did not complete the preferences:</h4>
+            <div th:each="student : ${allocatedGroup.getStudentAnswers()}">
+                <p th:if="${!student.isCompleted()}" th:text="${student.getStudent().getEmail()}"></p>
+
+            </div>
+            <p th:unless="${allocatedGroup.isContainsNotCompletedAnswers()}">None</p>
+            <h4>Our observations:</h4>
+            <p class="fw-bold">This is what our AI algorithm thought about these student answers:</p>
+            <p th:each="observation, i : ${allocatedGroup.getMostCommon()}" th:with="qNumber = ${i.index+1}" th:text="${'Q'+qNumber+': '+observation}"></p>
+            <p th:if="${allocatedGroup.getMostCommon().size() == 0}">None</p>
+            <a th:href="@{/convenor/preference-sets/{id}(id=${preferenceSet.getId()})}" class="btn btn-primary">Go Back</a>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-lg-6 mb-5" th:each="trueFalse, i : ${preferenceSet.getQuestionSet().getTrueFalseQuestions()}">
+            <div class="card">
+                <div class="card-body">
+                    <h3 th:text="'Question: '+${trueFalse.getQuestionText()}"></h3>
+                    <h4 th:text="'Weight: '+${trueFalse.getQuestionWeight()}"></h4>
+                    <h4 th:text="'Similar students grouped together?: '+${trueFalse.isGroupAnswersBySimilar()}"></h4>
+                    <div th:each="studentAnswer : ${allocatedGroup.getStudentAnswers()}">
+                        <p th:if="${studentAnswer.isCompleted() && studentAnswer.getTrueFalseAnswers().get(i.index).answer}"
+                           th:text="${studentAnswer.getStudent().getEmail() + ': ' + preferenceSet.getQuestionSet().getTrueFalseQuestions().get(i.index).option1}"></p>
+                        <p th:if="${studentAnswer.isCompleted() && !studentAnswer.getTrueFalseAnswers().get(i.index).answer}"
+                           th:text="${studentAnswer.getStudent().getEmail() + ': ' + preferenceSet.getQuestionSet().getTrueFalseQuestions().get(i.index).option2}"></p>
+                        <p th:unless="${studentAnswer.isCompleted()}" th:text="${studentAnswer.getStudent().getEmail()} + ': ~'"></p>
+                    </div>
+                    <p th:if="${allocatedGroup.getMostCommon().size() > i.index}" th:text="${allocatedGroup.getMostCommon().get(i.index)}"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 mb-5" th:each="multipleChoice, i : ${preferenceSet.getQuestionSet().getMultipleChoiceQuestions()}">
+            <div class="card">
+                <div class="card-body">
+                    <h3 th:text="'Question: '+${multipleChoice.getQuestionText()}"></h3>
+                    <h4 th:text="'Weight: '+${multipleChoice.getQuestionWeight()}"></h4>
+                    <h4 th:text="'Similar students grouped together?: '+${multipleChoice.isGroupAnswersBySimilar()}"></h4>
+                    <div class="col-12 table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th scope="col">Student</th>
+                                <th scope="col"
+                                    th:each="option : ${multipleChoice.getOptions()}" th:text="${option.getChoiceName()}"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="studentAnswer : ${allocatedGroup.getStudentAnswers()}">
+                                <td th:text="${studentAnswer.getStudent().getEmail()}"></td>
+
+                                <div th:if="${studentAnswer.isCompleted()}">
+                                    <td  th:each="answer : ${studentAnswer.getMultipleChoiceAnswers().get(i.index).getMultipleChoiceAnswers()}">
+                                        <span th:if="${answer.selected}"><i class="bi bi-check"></i></span>
+                                    </td>
+                                </div>
+
+                                <td th:unless="${studentAnswer.isCompleted()}" th:each="option : ${multipleChoice.getOptions()}">~</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p  th:with="answerIndex = ${((preferenceSet.getQuestionSet().getTrueFalseQuestions().size())+i.index)}">
+                        <span th:if="${allocatedGroup.getMostCommon().size() > answerIndex}" th:text="${allocatedGroup.getMostCommon().get(answerIndex)}"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 mb-5" th:each="priorityList, i : ${preferenceSet.getQuestionSet().getPriorityListQuestions()}">
+            <div class="card">
+                <div class="card-body">
+                    <h3 th:text="'Question: '+${priorityList.getQuestionText()}"></h3>
+                    <h4 th:text="'Weight: '+${priorityList.getQuestionWeight()}"></h4>
+                    <h4 th:text="'Similar students grouped together?: '+${priorityList.isGroupAnswersBySimilar()}"></h4>
+                    <p>Ordered highest to lowest</p>
+                    <div class="col-12 table-responsive">
+                        <table class="table table-striped">
+                            <tr th:each="studentAnswer : ${allocatedGroup.getStudentAnswers()}" class="d-table-cell border-table-primary-columns">
+                                <td class="fw-bold d-block border-bottom-primary"
+                                    th:text="${studentAnswer.getStudent().getEmail()}"></td>
+                                <div th:if="${studentAnswer.isCompleted()}">
+                                    <td class="d-block" th:each="item : ${studentAnswer.getPriorityListAnswers().get(i.index).getPriorityListAnswers()}" th:text="${priorityList.getOptions().get(item.getOrderInList()).getChoiceName()}"></td>
+                                </div>
+                                <td class="d-block" th:unless="${studentAnswer.isCompleted()}" th:each="option : ${priorityList.getOptions()}">~</td>
+                            </tr>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <p th:with="answerIndex = ${((preferenceSet.getQuestionSet().getTrueFalseQuestions().size())+(preferenceSet.getQuestionSet().getMultipleChoiceQuestions().size())+i.index)}">
+                        <span th:if="${allocatedGroup.getMostCommon().size() > answerIndex}" th:text="${allocatedGroup.getMostCommon().get(answerIndex)}"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

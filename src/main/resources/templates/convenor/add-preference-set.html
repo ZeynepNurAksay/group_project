@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Preference Set - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+<body>
+
+<header th:replace="fragments/convenor-header :: header"></header>
+
+
+<div class="container">
+
+    <div class="row my-3">
+        <div class="col-12">
+            <div th:if="${hidden == 'show'}"
+                 th:class="'p-3 w-100 col-lg-12 ' + ${bannerColor} + ' alert alert-dismissible fade show'" role="alert">
+                <span><i th:text="${message}"></i></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-12">
+            <h1>Create A Preference Set</h1>
+            <p>Assign a set of questions to a module/group of students<br><Strong>Note: </Strong>Once you have created a preference set you cannot edit the
+                question set or preference set until after the deadline</p>
+        </div>
+    </div>
+
+    <form th:action="@{/convenor/add-preference-set}" th:object="${preferenceSetDTO}" method="post" id="preferenceSetForm">
+
+        <div class="row my-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group my-4">
+
+                            <h3>Preference Set Name</h3>
+                            <p>Enter the name of your preference set to display to students (We will add your module code to the front of your name)</p>
+                            <div class="col-12 col-md-6">
+                                <label class="mb-1" for="questionSetTitle">Enter your preference set name</label>
+                                <input class="form-control" id="questionSetTitle" type="text"
+                                       th:placeholder="'E.g. CW2 Project Preferences'" th:field="*{name}">
+                            </div>
+                            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-error"></span>
+                        </div>
+
+                        <div class="form-group my-4">
+                            <h3>Choose Module and Questions</h3>
+                            <label for="selectedModuleID">Select which module/group of students to send the questions to:</label>
+                            <div class="col-12 col-md-6">
+                                <select id="selectedModuleID" class="form-control" th:field="*{moduleID}">
+                                    <!--suppress ThymeleafVariablesResolveInspection -->
+
+                                    <option th:each="module : ${modules}" th:value="${module.id}" th:text="${module.name}"></option>
+                                </select>
+                            </div>
+                            <span th:if="${#fields.hasErrors('moduleID')}" th:errors="*{moduleID}" class="text-error"></span>
+                        </div>
+
+                        <div class="form-group my-4">
+                            <label for="selectedQuestionSetID">Select which set of questions to ask the students</label>
+                            <div class="col-12 col-md-6">
+                                <select id="selectedQuestionSetID" class="form-control" th:field="*{questionSetID}">
+                                    <!--suppress ThymeleafVariablesResolveInspection -->
+
+                                    <option th:each="questionSet : ${questionSets}" th:value="${questionSet.id}" th:text="${questionSet.name}"></option>
+                                </select>
+                                <span th:if="${#fields.hasErrors('questionSetID')}" th:errors="*{questionSetID}" class="text-error"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group my-4">
+                            <h3>Deadline</h3>
+                            <label class="mb-1" for="deadline">Enter the date you would like the students to submit their preferences
+                                by</label>
+                            <div class="col-12 col-md-6">
+                                <input id="deadline" class="form-control" type="datetime-local" th:field="*{deadline}">
+                                <span th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}" class="text-error"></span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group my-4">
+                            <h3>Group Sizes</h3>
+                            <label for="min_students" class="w-100">Enter the minimum number of students in a group</label>
+                            <div class="col-12 col-md-6">
+                                <input id="min_students" type="number"
+                                       class="form-control true-false-input"
+                                       placeholder="Minimum Number of Students" th:field="*{groupMinNumber}"/>
+                            </div>
+                            <span th:if="${#fields.hasErrors('groupMinNumber')}" th:errors="*{groupMinNumber}" class="text-error" id="minError"></span>
+                        </div>
+
+
+                        <div class="form-group my-4">
+                            <label for="max_students" class="w-100">Enter the maximum number of students in a group</label>
+                            <div class="col-12 col-md-6">
+                                <input id="max_students" type="number"
+                                       class="form-control true-false-input"
+                                       placeholder="Maximum Number of Students" th:field="*{groupMaxNumber}"/>
+                            </div>
+                            <span th:if="${#fields.hasErrors('groupMaxNumber')}" th:errors="*{groupMaxNumber}" class="text-error"></span>
+                        </div>
+
+
+                        <div class="row my-5">
+                            <div class="col-12 col-md-6">
+                                <a th:href="@{/convenor/manage-questions}" class="btn btn-outline-primary w-100">Cancel</a>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <button type="submit" id="submit-button" class="btn btn-primary submit-btn w-100 mb-5 mt-3 mt-md-0">Create Preference Set</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </form>
+
+</div>
+
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

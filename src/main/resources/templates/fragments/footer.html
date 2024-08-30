@@ -1,0 +1,25 @@
+<footer th:fragment="footer" class="mb-4 border-top invisible" id="footer">
+    <div class="container-fluid my-4">
+        <div class="row">
+            <div class="col-12 col-sm-4 mb-3 mb-sm-0 text-center text-sm-end order-2 order-sm-1">
+                <h5>Created By:</h5>
+                <ul class="m-0 p-0 list-unstyled">
+                    <li>Josh Wilkins</li>
+                    <li>Cameron Ward</li>
+                    <li>Zeynep Aksay</li>
+                    <li>Muneer Fakih</li>
+                    <li>Aditya Shukla</li>
+                </ul>
+            </div>
+            <div class="col-12 col-sm-4 mb-3 mb-sm-0 text-center order-1 order-sm-2">
+                <h5>Group Allocator</h5>
+                <p th:text="'&copy; All rights reserved 2022-'+${#dates.year(#dates.createNow())}"></p>
+            </div>
+            <div class="col-12 col-sm-4 text-center text-sm-start order-3">
+                <h5>Contact us:</h5>
+<!--                TODO: client contact info-->
+                <a href="#" target="_blank" rel="nofollow">Client contact here</a>
+            </div>
+        </div>
+    </div>
+</footer>

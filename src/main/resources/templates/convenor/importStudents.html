@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Import Students - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+<body>
+
+<header th:replace="fragments/convenor-header :: header"></header>
+
+<div class="container">
+
+    <div class="row my-3">
+        <div th:if="${hidden == 'show'}"
+             th:class="'w-100 col-lg-12 ' + ${bannerColor} + ' alert alert-dismissible fade show'" role="alert">
+            <span><i th:text="${message}"></i></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mb-5">
+            <h1>Import Students</h1>
+            <p>Download the template file:</p>
+            <a th:href="@{/files/spreadsheet_template.csv}" download class="btn btn-outline-primary w-50 mb-3">Download
+                template file</a>
+            <form th:action="@{/convenor/import-students}" th:object="${importUsersDTO}" method="post" enctype="multipart/form-data">
+                <p>Don't see your module listed? Create your module's first:</p>
+                <a class="btn btn-outline-primary w-50 mb-5" th:href="@{/convenor/addModule}">Create Modules</a>
+
+                <div class="form-group mb-3">
+                    <label for="selectedModuleID">Select which module to add the new students to:</label>
+                    <select id="selectedModuleID" class="form-control" th:field="*{selectedModuleID}">
+                        <!--suppress ThymeleafVariablesResolveInspection -->
+                        <option th:each="module : ${modules}" th:value="${module.id}" th:text="${module.name}" th:selected="${lastSelected} eq module.id"></option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('selectedModuleID')}" th:errors="*{selectedModuleID}" class="text-error"></span>
+                </div>
+
+                <p>Click on the "Choose File" button to upload a file:</p>
+
+                <div class="form-group mb-3">
+                    <input type="file" id="csvFile" name="csvFile" th:field="*{csvFile}" class="form-control" accept=".csv">
+                    <span th:if="${#fields.hasErrors('csvFile')}" th:errors="*{csvFile}" class="text-error"></span>
+                </div>
+                <input type="submit" class="btn btn-primary w-50">
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Convenor Dashboard - Group Allocation System</title>
+  <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+
+<header th:replace="fragments/convenor-header :: header"></header>
+
+<body>
+<div class="container mb-5">
+  <div class="row">
+    <div class="col-lg-12 mb-5">
+      <h1>Welcome <span th:text ="${name}"></span></h1>
+      <h2>Convenor Dashboard</h2>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-lg-4 mb-5">
+      <div class="card h-100">
+        <div class="card-body d-flex flex-column">
+          <h2 class="text-center">Create Modules</h2>
+          <p>Upload a CSV file of student names and emails to import</p>
+          <a th:href="@{/convenor/modules}" class="btn btn-primary d-block mt-auto">View Modules</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 mb-5">
+      <div class="card h-100">
+        <div class="card-body d-flex flex-column">
+          <h2 class="text-center">View Preferences</h2>
+          <p>Create a new preference</p>
+          <a th:href="@{/convenor/preference-sets}" id = "preferenceSetButton" class="mt-auto btn btn-primary d-block">View Preference Sets</a>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-lg-4 mb-5">
+      <div class="card h-100">
+        <div class="card-body d-flex flex-column">
+          <h2 class="text-center">Create Questions</h2>
+          <p>Display a list of all modules available</p>
+          <a th:href="@{/convenor/question-sets}" class="mt-auto btn btn-primary d-block">View Question Sets</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

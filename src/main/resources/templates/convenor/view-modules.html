@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!--suppress ThymeleafVariablesResolveInspection -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Modules - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+
+<header th:replace="fragments/convenor-header :: header"></header>
+
+<body>
+<div class="container mb-5">
+    <div class="row my-3">
+        <div class="col-lg-12">
+            <div th:if="${hidden == 'show'}"
+                 th:class="'p-3 w-100 col-lg-12 ' + ${bannerColor} + ' alert alert-dismissible fade show'" role="alert">
+                <span><i th:text="${message}"></i></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 mb-5">
+            <h1>Your Modules/Cohorts</h1>
+            <p>Here you can see a list of your current modules, you can also see which students are associated with
+                which module</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Module Code</th>
+                    <th scope="col">Module Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Students</th>
+                    <th scope="col">Delete</th>
+                </tr>
+                <tbody>
+                <tr th:each="module : ${modules}">
+                    <th scope="row" th:text="${module.id}">"</th>
+                    <td th:text="${module.code}"></td>
+                    <td th:text="${module.name}"></td>
+                    <td th:text="${module.description}"></td>
+                    <td><a th:href="@{/convenor/module/{id}(id=${module.id})}">View Students</a></td>
+                    <td><a th:href="@{/convenor/delete/module/{id}(id=${module.id})}">Delete Module</a> </td>
+                </tr>
+                </tbody>
+
+
+            </table>
+        </div>
+        <div class="col-12">
+            <a th:href="@{/convenor/addModule}" class="btn btn-outline-primary w-50 mb-5">Add New Module</a>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

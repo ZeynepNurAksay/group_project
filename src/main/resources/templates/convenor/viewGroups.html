@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!--suppress ThymeleafVariablesResolveInspection -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Groups - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+
+<header th:replace="fragments/convenor-header :: header"></header>
+
+<body>
+<div class="container mb-5">
+    <div class="row my-3">
+        <div class="col-lg-12">
+            <div th:if="${hidden == 'show'}"
+                 th:class="'p-3 w-100 col-lg-12 ' + ${bannerColor} + ' alert alert-dismissible fade show'" role="alert">
+                <span><i th:text="${message}"></i></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 mb-5">
+            <h1>Your Groups</h1>
+            <p>Here you can see a list of your groups
+            <br>Click on an individual student to view their answers or the "view answers" button to see the groups answers</p>
+            <div class="card">
+                <div th:if="${preferenceSet.getStatus().name() == 'COMPLETE'}" class="card-body">
+                    <h3>Confirmed Groups</h3>
+                    <p>Students have received their allocated groups</p>
+                </div>
+                <div th:unless="${preferenceSet.getStatus().name == 'COMPLETE'}" class="card-body">
+                    <h3>Confirm Groups</h3>
+                    <p>Once you are happy with your groups, and you are ready for us to email students their group, press the confirm button below:</p>
+                    <a th:href="@{/convenor/confirm/preference-sets/{id}(id=${preferenceSetId})}" class="btn btn-primary">Confirm Group Allocations</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-sm-6 mb-5" th:each="group, i : ${groups}">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h2 class="text-center" th:text="'Group: ' + ${i.index+1}"></h2>
+                    <div class="mx-auto">
+                        <div th:each="answer : ${group.studentAnswers}">
+                            <a th:href="@{/convenor/student-preferences/{email}/{preferenceSetId}(email=${answer.student.email}, preferenceSetId=${id})}"
+                               th:text="${answer.student.email}"></a>
+                        </div>
+                        <a th:href="@{/convenor/preference-sets/{preferenceSetId}/{groupId}(preferenceSetId=${preferenceSetId}, groupId=${group.getId()})}"
+                           class="btn btn-primary w-100 my-3">View Answers</a>
+                    </div>
+                    <div class="w-100">
+                        <p th:each="observation, i : ${group.getMostCommon()}" th:with="qNumber = ${i.index+1}" th:text="${'Q'+qNumber+': '+observation}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

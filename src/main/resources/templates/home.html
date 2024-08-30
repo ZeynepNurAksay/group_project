@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+
+<header th:replace="('fragments/' + ${header}) :: header"></header>
+
+<body>
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-lg-12 mb-5">
+            <h1>Welcome to Group Allocator!</h1>
+        </div>
+    </div>
+
+    <div class="col-lg-12 mb-5">
+        <div class="card">
+            <div class="card-body">
+                <h2>Getting Started</h2>
+                <p>Are you a module convenor? Sign up here to start enrolling your students:</p>
+                <a class="btn btn-primary" th:href="@{/register}">Sign Up</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-4 mb-5">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="text-center">Feature 1 Highlight</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-5">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="text-center">Feature 2 Highlight</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-5">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2 class="text-center">Feature 3 Highlight</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

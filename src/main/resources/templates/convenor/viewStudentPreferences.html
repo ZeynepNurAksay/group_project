@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!--suppress ThymeleafVariablesResolveInspection -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Groups - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+
+<header th:replace="fragments/convenor-header :: header"></header>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12 my-3">
+            <h1 th:text="'Viewing student answers for: '+${student.getEmail()}"></h1>
+        </div>
+        <div class="col-12 my-3" th:each="index : ${#numbers.sequence( 0, #arrays.length(trueFalseQuestions)-1)}">
+            <div class="card">
+                <div class="card-body">
+                    <p class="fw-bold" th:text="${trueFalseQuestions[index].questionText}"></p>
+                    <br>
+                    <p th:text="${studentTrueFalseAnswers[index].answer}"></p>
+                    <br>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-12 my-3" th:each="index : ${#numbers.sequence( 0, #arrays.length(multipleChoiceQuestions)-1)}">
+            <div class="card">
+                <div class="card-body">
+                    <p class="fw-bold" th:text="${multipleChoiceQuestions[index].questionText}"></p>
+                    <br>
+                    <div th:if="${#lists.isEmpty(studentMultipleChoiceAnswers[index].multipleChoiceAnswers)}">
+                        <p>No submitted answers for this question</p>
+                    </div>
+                    <div th:each="studentMultipleChoiceAnswer, i: ${studentMultipleChoiceAnswers[index].multipleChoiceAnswers}">
+                        <p th:if="${studentMultipleChoiceAnswer.isSelected()}" th:text="${multipleChoiceQuestions.get(index).getOptions().get(i.index).getChoiceName()}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 my-3" th:each="index : ${#numbers.sequence( 0, #arrays.length(priorityListQuestions)-1)}">
+            <div class="card">
+                <div class="card-body">
+                    <p class="fw-bold" th:text="${priorityListQuestions[index].questionText}"></p>
+                    <br>
+                    <div th:if="${#lists.isEmpty(studentPriorityListAnswers[index].priorityListAnswers)}">
+                        <p>No submitted answers for this question</p>
+                    </div>
+                    <div th:each="studentPriorityOptionAnswer : ${studentPriorityListAnswers[index].priorityListAnswers}">
+                        <p th:text="${priorityListQuestions[index].getOptions().get(studentPriorityOptionAnswer.getOrderInList()).getChoiceName()}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

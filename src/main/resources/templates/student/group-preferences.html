@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!--suppress ThymeleafVariablesResolveInspection -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Submit Group Preferences - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+
+<header th:replace="fragments/student-header :: header"></header>
+
+<body>
+<div class="container mb-5">
+
+    <div class="row my-3">
+        <div class="col-12">
+            <div th:if="${hidden == 'show'}"
+                 th:class="'p-3 w-100 col-lg-12 ' + ${bannerColor} + ' alert alert-dismissible fade show'" role="alert">
+                <span><i th:text="${message}"></i></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 mb-5">
+            <h1>Submit group preferences:</h1>
+            <p>When module convenors need you to choose groups you submit your preferences here.
+                <br><strong>Note: </strong>You must submit your preferences before the deadline shown to avoid random group allocation.</p>
+        </div>
+    </div>
+
+    <div class="row" th:if="${studentsPreferenceSets.size() == 0}">
+        <div class="col-12 mb-5">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h2>There are no questions for you to complete right now</h2>
+                    <p>Either your module convenor has not assigned you any questions to answer yet, or you have missed the deadline. <br>Don't worry you will still be allocated a group.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-5" th:each="preferenceSet : ${studentsPreferenceSets}">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h2 class="" th:text="${preferenceSet.module.code}"></h2>
+                    <h3 th:text="${preferenceSet.name}"></h3>
+                    <h4 th:text="${'Deadline: ' + preferenceSet.deadline}"></h4>
+                    <p th:if="${preferenceSet.isCompleted()}" class="w-100 banner-color-green p-1 text-center">Submitted</p>
+                    <div class="mt-auto">
+                        <a th:if="${!preferenceSet.isCompleted()}" th:href="@{/student/answer-questions/{id}(id=${preferenceSet.id})}" class="btn btn-outline-primary w-100 mt-3">Complete Questions Now</a>
+                        <a th:if="${preferenceSet.isCompleted()}" th:href="@{/student/answer-questions/{id}(id=${preferenceSet.id})}" class="btn btn-outline-primary w-100 mt-3">Update Preferences</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

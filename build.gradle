@@ -1,0 +1,51 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.5'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+springBoot {
+    mainClass = 'group07.group.allocation.Group07Application'
+}
+/*bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}*/
+
+group = 'group07.group.allocation'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.6.5'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.6.5'
+    implementation('org.thymeleaf:thymeleaf:3.0.15.RELEASE')
+    implementation 'org.springframework.boot:spring-boot-starter-validation:2.6.5'
+    implementation 'org.springframework.boot:spring-boot-starter-mail:2.6.5'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.6.5'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.5'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.6.5'
+    implementation 'org.springframework.session:spring-session-core:2.6.2'
+    implementation 'org.springframework.session:spring-session-jdbc:2.6.2'
+    implementation 'mysql:mysql-connector-java:8.0.28'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor:2.6.5'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5:3.0.4.RELEASE'
+    implementation 'org.thymeleaf:thymeleaf-spring5:3.0.15.RELEASE'
+    implementation 'com.github.mkopylec:recaptcha-spring-boot-starter:2.3.1'
+    implementation 'org.seleniumhq.selenium:selenium-java:4.1.2'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools:2.6.5'
+    runtimeOnly 'org.apache.taglibs:taglibs-standard-impl:1.2.5'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.5'
+    implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.8'    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+}
+
+test {
+    useJUnitPlatform()
+}

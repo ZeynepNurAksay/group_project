@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Import Student Success - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+<body>
+
+<header th:replace="fragments/convenor-header :: header"></header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 mb-5">
+            <h1>Import Student Success</h1>
+            <p>You uploaded the csv file successfully</p>
+            <p>New students will receive their registration email shortly</p>
+            <a th:href="@{import-students}" class="btn btn-outline-primary mb-2">Import another spreadsheet</a>
+            <a th:href="@{dashboard}" class="btn btn-outline-primary mb-2">Go to dashboard</a>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

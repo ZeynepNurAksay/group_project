@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!--suppress ThymeleafVariablesResolveInspection -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Preference Sets - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+
+<header th:replace="fragments/convenor-header :: header"></header>
+
+<body>
+<div class="container mb-5">
+    <div class="row my-3">
+        <div class="col-lg-12">
+            <div th:if="${hidden == 'show'}"
+                 th:class="'p-3 w-100 col-lg-12 ' + ${bannerColor} + ' alert alert-dismissible fade show'" role="alert">
+                <span><i th:text="${message}"></i></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 mb-5">
+            <h1>Your Preference Sets</h1>
+            <p>Here you can see a list of your preference sets and their status, once the deadline for the preference set is passed, you will be able to approve
+                the group allocations</p>
+            <p>Status Descriptions:</p>
+            <ul>
+                <li><strong class="awaiting-deadline">Awaiting Deadline </strong>- The questions have been sent to students and the system is waiting until the
+                    deadline before allocating groups
+                </li>
+                <li><strong class="allocating-groups">Allocating Groups </strong>- The system has closed student responses and is creating the groups</li>
+                <li><strong class="awaiting-approval">Awaiting approval </strong>- The system is waiting to for you to confirm the group allocations before
+                    sending the results to students
+                </li>
+                <li><strong class="complete">Complete </strong>- Students have received their allocated groups</li>
+            </ul>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Status</th>
+                    <th scope="col">Preference Set Name</th>
+                    <th scope="col">Module</th>
+                    <th scope="col">Question Set</th>
+                    <th scope="col">Deadline</th>
+                    <th scope="col">View Groups</th>
+                    <th scope="col">Delete Preference Set</th>
+                </tr>
+                <tbody>
+                <tr th:each="preferenceSet : ${preferenceSets}">
+                    <th class="align-middle" scope="row"
+                        th:text="${#strings.capitalizeWords(#strings.replace(#strings.toLowerCase((preferenceSet.status)), '_', ' '))}"
+                        th:class="${#strings.replace(#strings.toLowerCase(preferenceSet.status),'_','-')} + ' align-middle'"></th>
+                    <td class="align-middle" th:text="${preferenceSet.name}"></td>
+                    <td class="align-middle" th:text="${preferenceSet.module.name}"></td>
+                    <td class="align-middle" th:text="${preferenceSet.questionSet.name}"></td>
+                    <td class="align-middle" th:text="${#temporals.format(preferenceSet.deadline, 'dd-MM-yyyy HH:mm')}"></td>
+                    <td><a class="btn btn-primary" th:classappend="${#strings.toUpperCase(preferenceSet.status) == 'AWAITING_DEADLINE' or #strings.toUpperCase(preferenceSet.status) == 'ALLOCATING_GROUPS' ? 'disabled' : ''}"
+                           th:href="@{/convenor/preference-sets/{id}(id=${preferenceSet.id})}">View Groups</a></td>
+                    <td class="align-middle"><a th:href="@{/convenor/delete/preference-set/{id}(id=${preferenceSet.id})}">Delete</a></td>
+                </tr>
+                </tbody>
+
+
+            </table>
+        </div>
+        <div class="col-12">
+            <a th:href="@{/convenor/add-preference-set}" class="btn btn-outline-primary w-50 mb-5">Add New Preference Set</a>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

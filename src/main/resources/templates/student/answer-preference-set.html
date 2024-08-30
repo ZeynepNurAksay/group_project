@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<!--suppress HtmlFormInputWithoutLabel, ThymeleafVariablesResolveInspection -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Submit Group Preference - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+    <script src="/static/js/answerPreferenceSet.js" th:src="@{/js/answerPreferenceSet.js}" type="text/javascript"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+</head>
+
+<header th:replace="fragments/student-header :: header"></header>
+
+<body>
+<div class="container mb-5">
+
+    <div class="row my-3">
+        <div class="col-12">
+            <div th:if="${hidden == 'show'}"
+                 th:class="'p-3 w-100 col-lg-12 ' + ${bannerColor} + ' alert alert-dismissible fade show'" role="alert">
+                <span><i th:text="${message}"></i></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row my-3" th:if="${preview == true}">
+        <div class="col-12">
+            <div class="alert alert-warning" role="alert">
+                This is a preview of how your form will look to students
+            </div>
+            <div class="col-12 col-md-6">
+                <a class="btn btn-primary w-100" th:href="@{/convenor/question-set/{id}(id=${preferenceSet.getQuestionSet().id})}">Edit Questions</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12 mb-5">
+            <h1>Submit group preferences:</h1>
+            <h2 class="" th:text="${preferenceSet.module.code}"></h2>
+            <h3 th:text="${preferenceSet.name}"></h3>
+            <h4 th:text="${'Deadline: ' + preferenceSet.deadline}"></h4>
+            <div th:if="${preview == true}">
+                <h4>For demonstration purposes the maximum and minimum group sizes are set to:</h4>
+                <p th:text="'Minimum Group Size: '+${preferenceSet.getGroupMinNumber()}"></p>
+                <p th:text="'Maximum Group Size: '+${preferenceSet.getGroupMaxNumber()}"></p>
+            </div>
+        </div>
+    </div>
+
+    <form th:action="@{/student/answer-questions/{id}(id=${preferenceSet.id})}" th:object="${studentAnswerDTO}" method="post" id="student-answer-form">
+        <input type="hidden" name="preferenceSetId" th:value="${preferenceSet.getId()}">
+        <input type="hidden" th:value="${preferenceSet.getGroupMinNumber()}" id="group-min-number">
+        <input type="hidden" th:value="${preferenceSet.getGroupMaxNumber()}" id="group-max-number">
+        <div class="row">
+            <div class="col-12 my-3" th:if="${preferenceSet.questionSet.isStudentChooseOwnGroup()}">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>(Optional) Choose your own group members.<br>Enter the other students email addresses below:</h4>
+                        <div>
+                            <ul th:if="${preferenceSet.getGroupMinNumber() != preferenceSet.getGroupMaxNumber()}">Group Sizes:
+                                <li th:text="'Minimum Group Size: '+${preferenceSet.getGroupMinNumber()}"></li>
+                                <li th:text="'Maximum Group Size: '+${preferenceSet.getGroupMaxNumber()}"></li>
+                            </ul>
+                            <p th:if="${preferenceSet.getGroupMinNumber() == preferenceSet.getGroupMaxNumber()}"
+                               th:text="'Required number of group members (including yourself): '+${preferenceSet.getGroupMaxNumber()}"></p>
+                        </div>
+
+                        <div class="col-12 col-md-6" th:if="${studentAnswerDTO.getPreferredGroupMembers().size() > 0}">
+                            <div class="form-group my-3">
+                                <label for="studentsEmail1">Your email:</label>
+                                <input id="studentsEmail1" class="form-control disabled" th:placeholder="${studentsEmail}">
+                            </div>
+                            <div class="form-group my-3 member-email" th:each="groupMember, i : ${studentAnswerDTO.getPreferredGroupMembers()}">
+                                <div class="input-group">
+                                    <label th:for="'groupMemberEmail_'+${i.index+2}" class="w-100" th:text="'Other group member '+${i.index+2}+':'"></label>
+                                    <input th:id="'groupMemberEmail_'+${i.index+2}" class="form-control member-email" th:placeholder="'#'+${i.index+2}"
+                                           th:field="*{preferredGroupMembers[__${i.index}__]}"
+                                           th:value="${groupMember}">
+                                    <button class="btn btn-outline-primary close" type="button"
+                                            th:if="${i.index+2 > preferenceSet.getGroupMinNumber()}"><i class="bi bi-x-lg"></i></button>
+                                </div>
+                                <span th:if="${#fields.hasErrors('preferredGroupMembers['+i.index+']')}"
+                                      th:errors="*{preferredGroupMembers[__${i.index}__]}"
+                                      class="text-error"></span>
+                            </div>
+                            <button class="btn btn-outline-primary mt-3 add-member d-none" type="button">Add another member</button>
+                        </div>
+                        <div class="col-12 col-md-6" th:unless="${studentAnswerDTO.getPreferredGroupMembers().size() > 0}">
+                            <div class="form-group my-3">
+                                <label for="studentsEmail">Your email:</label>
+                                <input id="studentsEmail" class="form-control disabled" th:placeholder="${studentsEmail}">
+                            </div>
+                            <div class="form-group my-3 member-email" th:each="i : ${#numbers.sequence(0, preferenceSet.getGroupMinNumber() - 2)}">
+                                <label th:for="'groupMemberEmail_'+${i+2}" th:text="'Other group member '+${i+2}+':'"></label>
+                                <input th:id="'groupMemberEmail_'+${i+2}" class="form-control member-email" th:placeholder="'#'+${i+2}"
+                                       th:field="*{preferredGroupMembers[__${i}__]}">
+                                <span th:if="${#fields.hasErrors('preferredGroupMembers['+i+']')}"
+                                      th:errors="*{preferredGroupMembers[__${i}__]}"
+                                      class="text-error"></span>
+                            </div>
+                            <button class="btn btn-outline-primary mt-3 add-member d-none" type="button">Add another member</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 my-3" th:each="trueFalse, i : ${preferenceSet.questionSet.getTrueFalseQuestions()}">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 th:text="${trueFalse.getQuestionText()}"></h4>
+                        <p th:text="${trueFalse.getQuestionDescription()}"></p>
+                        <div class="form-check">
+                            <input th:if="${studentAnswerDTO.trueFalseAnswers.size() <=0}"
+                                   class="form-check-input" type="radio" th:id="'trueFalse_op1_'+${i.index}" th:value="'True'"
+                                   th:name="'trueFalseAnswers['+${i.index}+'].answer'">
+                            <input th:unless="${studentAnswerDTO.trueFalseAnswers.size() <=0}"
+                                   class="form-check-input" type="radio" th:id="'trueFalse_op1_'+${i.index}" th:value="'True'"
+                                   th:name="'trueFalseAnswers['+${i.index}+'].answer'"
+                                   th:checked="${#strings.toLowerCase(studentAnswerDTO.getTrueFalseAnswers().get(i.index).getAnswer()) == 'true'} ? 'checked'">
+                            <label class="form-check-label" th:for="'trueFalse_op1_'+${i.index}" th:text="${trueFalse.option1}"></label>
+
+                        </div>
+                        <div class="form-check">
+                            <input th:if="${studentAnswerDTO.trueFalseAnswers.size() <=0}"
+                                   class="form-check-input" type="radio" th:id="'trueFalse_op2_'+${i.index}" th:value="'False'"
+                                   th:name="'trueFalseAnswers['+${i.index}+'].answer'">
+                            <input th:unless="${studentAnswerDTO.trueFalseAnswers.size() <=0}"
+                                   class="form-check-input" type="radio" th:id="'trueFalse_op2_'+${i.index}" th:value="'False'"
+                                   th:name="'trueFalseAnswers['+${i.index}+'].answer'"
+                                   th:checked="${#strings.toLowerCase(studentAnswerDTO.getTrueFalseAnswers().get(i.index).getAnswer()) == 'false'} ? 'checked'">
+                            <label class="form-check-label" th:for="'trueFalse_op2_'+${i.index}" th:text="${trueFalse.option2}"></label>
+                        </div>
+                        <span th:if="${#fields.hasErrors('trueFalseAnswers['+i.index+']')}"
+                              th:errors="*{trueFalseAnswers[__${i.index}__]}"
+                              class="text-error"></span>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 my-3" th:each="multipleChoice, i : ${preferenceSet.questionSet.getMultipleChoiceQuestions()}">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 th:text="${multipleChoice.getQuestionText()}"></h4>
+                        <p th:text="${multipleChoice.getQuestionDescription()}"></p>
+                        <p th:if="${multipleChoice.getMaximumSelection == multipleChoice.getMinimumSelection}"
+                           th:text="'Select '+${multipleChoice.getMaximumSelection} + ' option(s)'"></p>
+                        <p th:if="${multipleChoice.getMaximumSelection != multipleChoice.getMinimumSelection}"
+                           th:text="'Select between '+${multipleChoice.getMinimumSelection + ' and '+ multipleChoice.getMaximumSelection} + ' option(s)'"></p>
+                        <input type="hidden" class="multiple-choice-max" th:value="${multipleChoice.getMaximumSelection()}">
+                        <input type="hidden" class="multiple-choice-min" th:value="${multipleChoice.getMinimumSelection()}">
+                        <div class="options">
+                            <div class="form-check" th:each="option, j : ${multipleChoice.getOptions()}">
+                                <div th:if="${studentAnswerDTO.multipleChoiceAnswers.size() <=0}">
+                                    <input class="form-check-input my-2" type="checkbox" th:id="${'multi_choice_q'+i.index+'_op'+j.index}" th:value="'True'"
+                                           th:name="${'multipleChoiceAnswers['+i.index+'].selectedAnswers['+j.index+'].selected'}">
+                                </div>
+                                <div th:unless="${studentAnswerDTO.multipleChoiceAnswers.size() <=0}">
+                                    <input th:if="${studentAnswerDTO.multipleChoiceAnswers.get(i.index).getSelectedAnswers().size()-j.index <= 0}"
+                                           class="form-check-input my-2" type="checkbox" th:id="${'multi_choice_q'+i.index+'_op'+j.index}" th:value="'True'"
+                                           th:name="${'multipleChoiceAnswers['+i.index+'].selectedAnswers['+j.index+'].selected'}">
+                                    <input th:unless="${studentAnswerDTO.multipleChoiceAnswers.get(i.index).getSelectedAnswers().size()-j.index <= 0}"
+                                           class="form-check-input my-2" type="checkbox" th:id="${'multi_choice_q'+i.index+'_op'+j.index}" th:value="'True'"
+                                           th:name="${'multipleChoiceAnswers['+i.index+'].selectedAnswers['+j.index+'].selected'}"
+                                           th:checked="${#strings.toLowerCase(studentAnswerDTO.multipleChoiceAnswers.get(i.index).selectedAnswers.get(j.index).selected) == 'true'} ? 'checked'">
+                                </div>
+
+                                <label class="form-check-label" th:for="${'multi_choice_q'+i.index+'_op'+j.index}" th:text="${option.choiceName}"></label>
+                            </div>
+                            <span th:if="${#fields.hasErrors('multipleChoiceAnswers['+i.index+']')}"
+                                  th:errors="*{multipleChoiceAnswers[__${i.index}__]}"
+                                  class="text-error"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 my-3" th:each="priorityList, i : ${preferenceSet.questionSet.getPriorityListQuestions()}">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 th:text="${priorityList.getQuestionText()}"></h4>
+                        <p th:text="${priorityList.getQuestionDescription()}"></p>
+                        <div class="col-12 col-md-6">
+                            <ul class="list-group sortable">
+                                <li class="list-group-item justify-content-between d-flex align-items-center my-1 outline-primary"
+                                    th:each="option, j : ${priorityList.getOptions()}">
+                                    <input type="hidden" th:id="${'priority_list_q'+i.index+'_op'+j.index}"
+                                           th:name="${'priorityListAnswers['+i.index+'].priorityListAnswers['+j.index+'].orderInList'}"
+                                           th:value="${studentAnswerDTO.priorityListAnswers.get(i.index).priorityListAnswers.get(j.index).orderInList}">
+                                    <label th:for="${'priority_list_q'+i.index+'_op'+j.index}" th:text="${option.choiceName}"></label>
+                                    <div class="justify-content-between">
+                                        <i class="bi btn btn-primary bi-chevron-up fs-5 me-3"></i>
+                                        <i class="bi btn btn-secondary bi-chevron-down fs-5"></i>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <span th:if="${#fields.hasErrors('priorityListAnswers['+i.index+']')}"
+                              th:errors="*{priorityListAnswers[__${i.index}__]}"
+                              class="text-error"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6" th:if="${preview != true}">
+                <button type="submit" class="btn btn-primary w-100">Submit answers</button>
+                <span th:if="${#fields.hasErrors('submit')}"
+                      th:errors="*{submit}"
+                      class="text-error"></span>
+            </div>
+
+        </div>
+    </form>
+
+
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

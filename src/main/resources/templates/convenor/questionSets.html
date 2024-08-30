@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!--suppress ThymeleafVariablesResolveInspection -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Question Sets - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+
+<header th:replace="fragments/convenor-header :: header"></header>
+
+<body>
+<div class="container mb-5">
+    <div class="row my-3">
+        <div class="col-lg-12">
+            <div th:if="${hidden == 'show'}"
+                 th:class="'p-3 w-100 col-lg-12 ' + ${bannerColor} + ' alert alert-dismissible fade show'" role="alert">
+                <span><i th:text="${message}"></i></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 mb-5">
+            <h1>Your Question Sets</h1>
+            <p>Here you can see a list of your created question sets, you can remove or edit a question set before assigning it to a module/cohort</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Question Set Name</th>
+                    <th scope="col">Students can choose their own group</th>
+                    <th scope="col">No. Questions</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Preview</th>
+                    <th scope="col">Delete</th>
+                </tr>
+                <tbody>
+                <tr th:each="questionSet : ${questionSets}">
+                    <td th:text="${questionSet.name}"></td>
+                    <td th:text="${questionSet.studentChooseOwnGroup}"></td>
+                    <td th:text="${questionSet.numQuestions}"></td>
+                    <td><a th:href="@{/convenor/question-set/{id}(id=${questionSet.getId()})}">Edit</a></td>
+                    <td><a th:href="@{/convenor/question-set/preview/{id}(id=${questionSet.id})}">Preview</a></td>
+                    <td><a th:href="@{/convenor/delete-question-set/{id}(id=${questionSet.id})}">Delete</a></td>
+                </tr>
+                </tbody>
+
+
+            </table>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <a th:href="@{/convenor/question-set}" class="btn btn-outline-primary w-100 mb-5">Add New Question Set</a>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

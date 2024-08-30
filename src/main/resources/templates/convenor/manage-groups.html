@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manage Groups - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+
+<header th:replace="fragments/convenor-header :: header"></header>
+
+<body>
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-lg-12 mb-5">
+            <h1>Manage Groups</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-5">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h2 class="text-center">Create Preference Set</h2>
+                    <p>Set a deadline and allocate a question set to a module to ask students to give their group preferences</p>
+                    <a th:href="@{/convenor/add-preference-set}" class="btn btn-primary d-block mt-auto">Create Preference</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-5">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h2 class="text-center">View Preference Progress</h2>
+                    <p>Display a list and status of your preference sets</p>
+                    <a th:href="@{/convenor/preference-sets}" class="mt-auto btn btn-primary d-block">View Preference Sets</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>

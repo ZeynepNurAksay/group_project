@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+</head>
+
+<header th:replace="fragments/header :: header"></header>
+<body>
+<div class="container mb-5">
+    <div class="row my-3">
+        <div class="col-lg-12">
+            <div th:if="${hidden == 'show'}" th:class="'p-3 w-100 col-lg-12 ' + ${bannerColor} + ' alert alert-dismissible fade show'" role="alert">
+                <span><i th:text="${message}"></i></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 col-12 mx-auto">
+            <h1>Sign up</h1>
+            <h3>Please only sign up if you are a module convenor</h3>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <form th:action="@{/registerUser}" th:object="${userRegister}">
+                        <div class="form-group mb-3">
+                            <label for="firstName">First name: </label>
+                            <input id="firstName" type="text" th:field="*{firstName}" class="form-control" required />
+                            <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-error"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="secondName">Surname: </label>
+                            <input id="secondName" type="text" th:field="*{secondName}" class="form-control" required />
+                            <span th:if="${#fields.hasErrors('secondName')}" th:errors="*{secondName}" class="text-error"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="email">Email: </label>
+                            <input id="email" type="email" th:field="*{email}" class="form-control" required />
+                            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-error"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="password"> Password: </label>
+                            <input id="password" type="password" th:field="*{password}" class="form-control" required />
+                            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-error"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="rePassword">Please re-type your password: </label>
+                            <input id="rePassword" type="password" th:field="*{rePassword}" class="form-control" required />
+                            <span th:if="${#fields.hasErrors('rePassword')}" th:errors="*{rePassword}" class="text-error"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <div class="g-recaptcha col-sm-5" th:attr="data-sitekey=${@captchaSettings.getSite()}"></div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mb-5">Sign Up</button>
+                    </form>
+                    <p>Do you already have an account?
+                    <a th:href="@{/login}">Log in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

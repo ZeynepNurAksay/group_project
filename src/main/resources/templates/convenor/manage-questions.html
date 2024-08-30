@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manage Questions - Group Allocation System</title>
+    <object th:include="fragments/head :: head" th:remove="tag"></object>
+</head>
+
+<header th:replace="fragments/convenor-header :: header"></header>
+
+<body>
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-lg-12 mb-5">
+            <h1>Manage Questions</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-5">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h2 class="text-center">Create Question Set</h2>
+                    <p>Create a new list of preference questions to ask students</p>
+                    <a th:href="@{/convenor/question-set}" class="mt-auto btn btn-primary d-block">Create Question Set</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-5">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h2 class="text-center">View Question Sets</h2>
+                    <p>View your created question sets before assigning them to a group of students</p>
+                    <a th:href="@{/convenor/question-sets}" class="btn btn-primary d-block mt-auto">View Question Sets</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+
+</body>
+</html>
